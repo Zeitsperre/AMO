@@ -1,0 +1,24 @@
+FUNCTIONS NEEDED INCLUDE THE FOLLOWING:
+
+ST_CLOSESTPOINT(GEOM1, GEOM2) -> Returns the 2-dimensional point on g1 that is closest to g2. This is the first point of the shortest line.
+
+ST_DISTANCE(ST_TRANSFORM(GEOM, 3370))
+
+
+--
+DROP TABLE IF EXISTS testlayer;
+
+SELECT ic.*, st_area(st_transform(ic.geom, 3370))/1000000 calc_area
+INTO testlayer
+FROM industrycanada_hexagon ic;
+
+CREATE OR REPLACE 
+VIEW cities AS
+SELECT gid, osm_id, full_id, name, name_en, is_in_iso_, geom
+FROM canada_cities_nad83;
+
+SELECT ic.*
+INTO hex_cities
+FROM industrycanada_hexagon ic, canada_cities_nad83 cc
+WHERE st_contains(ic.geom,cc.geom);
+

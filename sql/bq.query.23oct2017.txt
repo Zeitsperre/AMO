@@ -1,0 +1,16 @@
+SELECT
+  connection_spec.server_geolocation.country_code as country_code,
+  COUNT(DISTINCT test_id) AS boomerangs
+FROM
+  [plx.google:m_lab.2016_01.all]
+WHERE
+  project = 3
+  AND 
+    connection_spec.client_geolocation.country_code = connection_spec.server_geolocation.country_code
+    AND (
+      (paris_traceroute_hop.src_geolocation.country_code != connection_spec.server_geolocation.country_code AND paris_traceroute_hop.src_geolocation.country_code != '') OR
+      (paris_traceroute_hop.dest_geolocation.country_code != connection_spec.server_geolocation.country_code AND paris_traceroute_hop.dest_geolocation.country_code != '') 
+    )
+GROUP BY country_code
+ORDER BY country_code ASC
+

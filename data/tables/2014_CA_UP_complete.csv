@@ -1,0 +1,44 @@
+
+********************************************************************
+** New OAuth2 credentials needed, beginning authorization process **
+********************************************************************
+
+Go to the following link in your browser:
+
+    https://accounts.google.com/o/oauth2/auth?scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fbigquery+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fdrive&redirect_uri=urn%3Aietf%3Awg%3Aoauth%3A2.0%3Aoob&response_type=code&client_id=32555940559.apps.googleusercontent.com&access_type=offline
+
+Enter verification code: You have encountered a bug in the BigQuery CLI. Please file a bug report in our
+public issue tracker:
+https://code.google.com/p/google-bigquery/issues/list
+Please include a brief description of the steps that led to this issue, as well
+as any rows that can be made public from the following information:
+
+========================================
+== Platform ==
+  CPython:2.7.9:Linux-3.16.0-4-amd64-x86_64-with-debian-8.6
+== bq version ==
+  2.0.24
+== Command line ==
+  ['/usr/lib/google-cloud-sdk/platform/bq/bq.py', '--format=csv', 'query', '-n', '750000', "\n\nSELECT \nSTRFTIME_UTC_USEC((INTEGER(web100_log_entry.log_time) * 1000000), '%F %H:%M') AS day_timestamp,\nweb100_log_entry.connection_spec.local_ip, \nweb100_log_entry.connection_spec.remote_ip,\nconnection_spec.client_hostname,\nconnection_spec.client_geolocation.country_name,connection_spec.client_geolocation.city,\nconnection_spec.client_geolocation.postal_code,connection_spec.client_geolocation.latitude,\nconnection_spec.client_geolocation.longitude, \n8 * web100_log_entry.snap.HCThruOctetsReceived/web100_log_entry.snap.Duration AS uploadThroughput,\nweb100_log_entry.snap.SegsRetrans/web100_log_entry.snap.DataSegsOut AS packetRetransmitRate,\nweb100_log_entry.snap.SumRTT/web100_log_entry.snap.CountRTT AS avgRTT,\nweb100_log_entry.snap.MinRTT,\nweb100_log_entry.snap.SndLimTimeCwnd/8 * (web100_log_entry.snap.SndLimTimeRwin + web100_log_entry.snap.SndLimTimeCwnd + web100_log_entry.snap.SndLimTimeSnd) AS congestionLimitedStateTimeShare,\nweb100_log_entry.snap.SndLimTimeRwin/8 * (web100_log_entry.snap.SndLimTimeRwin + web100_log_entry.snap.SndLimTimeCwnd + web100_log_entry.snap.SndLimTimeSnd) AS receiverLimitedStateTimeShare,\nweb100_log_entry.snap.SndLimTimeSnd/8 * (web100_log_entry.snap.SndLimTimeRwin + web100_log_entry.snap.SndLimTimeCwnd + web100_log_entry.snap.SndLimTimeSnd) AS senderLimitedStateTimeShare \nFROM \n[plx.google:m_lab.2014_01.all],[plx.google:m_lab.2014_02.all],[plx.google:m_lab.2014_03.all],[plx.google:m_lab.2014_04.all],[plx.google:m_lab.2014_05.all],[plx.google:m_lab.2014_06.all],[plx.google:m_lab.2014_07.all],[plx.google:m_lab.2014_08.all],[plx.google:m_lab.2014_09.all],[plx.google:m_lab.2014_10.all],[plx.google:m_lab.2014_11.all],[plx.google:m_lab.2014_12.all] \nWHERE  \nconnection_spec.client_geolocation.country_name = 'Canada' AND IS_EXPLICITLY_DEFINED(web100_log_entry.snap.Duration) AND IS_EXPLICITLY_DEFINED(web100_log_entry.snap.HCThruOctetsReceived) AND web100_log_entry.snap.HCThruOctetsReceived >= 8192 AND IS_EXPLICITLY_DEFINED(project) AND project = 0 AND IS_EXPLICITLY_DEFINED(web100_log_entry.is_last_entry) AND web100_log_entry.snap.Duration >= 9000000 AND web100_log_entry.snap.Duration < 3600000000\n"]
+== UTC timestamp ==
+  2016-12-19 16:25:46
+== Error trace ==
+  File "/usr/lib/google-cloud-sdk/platform/bq/bq.py", line 911, in RunSafely
+    return_value = self.RunWithArgs(*args, **kwds)
+  File "/usr/lib/google-cloud-sdk/platform/bq/bq.py", line 1498, in RunWithArgs
+    client = Client.Get()
+  File "/usr/lib/google-cloud-sdk/platform/bq/bq.py", line 688, in Get
+    cls.client = Client.Create()
+  File "/usr/lib/google-cloud-sdk/platform/bq/bq.py", line 668, in Create
+    credentials = _GetCredentialsFromFlags()
+  File "/usr/lib/google-cloud-sdk/platform/bq/bq.py", line 400, in _GetCredentialsFromFlags
+    credentials = credentials_getter(storage)
+  File "/usr/lib/google-cloud-sdk/platform/bq/bq.py", line 257, in _GetCredentialsFromOAuthFlow
+    credentials = oauth2client.tools.run(flow, storage)
+  File "/usr/lib/google-cloud-sdk/platform/bq/third_party/oauth2client/util.py", line 137, in positional_wrapper
+    return wrapped(*args, **kwargs)
+  File "/usr/lib/google-cloud-sdk/platform/bq/third_party/oauth2client/old_run.py", line 151, in run
+    code = input('Enter verification code: ').strip()
+========================================
+
+Unexpected exception in query operation: [Errno 5] Input/output error

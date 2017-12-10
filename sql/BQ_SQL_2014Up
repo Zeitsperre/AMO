@@ -1,0 +1,23 @@
+bq --format=csv query -n 750000 "
+
+SELECT 
+STRFTIME_UTC_USEC((INTEGER(web100_log_entry.log_time) * 1000000), '%F %H:%M') AS day_timestamp,
+web100_log_entry.connection_spec.local_ip, 
+web100_log_entry.connection_spec.remote_ip,
+connection_spec.client_hostname,
+connection_spec.client_geolocation.country_name,connection_spec.client_geolocation.city,
+connection_spec.client_geolocation.postal_code,connection_spec.client_geolocation.latitude,
+connection_spec.client_geolocation.longitude, 
+8 * web100_log_entry.snap.HCThruOctetsReceived/web100_log_entry.snap.Duration AS uploadThroughput,
+web100_log_entry.snap.SegsRetrans/web100_log_entry.snap.DataSegsOut AS packetRetransmitRate,
+web100_log_entry.snap.SumRTT/web100_log_entry.snap.CountRTT AS avgRTT,
+web100_log_entry.snap.MinRTT,
+web100_log_entry.snap.SndLimTimeCwnd/8 * (web100_log_entry.snap.SndLimTimeRwin + web100_log_entry.snap.SndLimTimeCwnd + web100_log_entry.snap.SndLimTimeSnd) AS congestionLimitedStateTimeShare,
+web100_log_entry.snap.SndLimTimeRwin/8 * (web100_log_entry.snap.SndLimTimeRwin + web100_log_entry.snap.SndLimTimeCwnd + web100_log_entry.snap.SndLimTimeSnd) AS receiverLimitedStateTimeShare,
+web100_log_entry.snap.SndLimTimeSnd/8 * (web100_log_entry.snap.SndLimTimeRwin + web100_log_entry.snap.SndLimTimeCwnd + web100_log_entry.snap.SndLimTimeSnd) AS senderLimitedStateTimeShare 
+FROM 
+[plx.google:m_lab.2014_01.all],[plx.google:m_lab.2014_02.all],[plx.google:m_lab.2014_03.all],[plx.google:m_lab.2014_04.all],[plx.google:m_lab.2014_05.all],[plx.google:m_lab.2014_06.all],[plx.google:m_lab.2014_07.all],[plx.google:m_lab.2014_08.all],[plx.google:m_lab.2014_09.all],[plx.google:m_lab.2014_10.all],[plx.google:m_lab.2014_11.all],[plx.google:m_lab.2014_12.all] 
+WHERE  
+connection_spec.client_geolocation.country_name = 'Canada' AND IS_EXPLICITLY_DEFINED(web100_log_entry.snap.Duration) AND IS_EXPLICITLY_DEFINED(web100_log_entry.snap.HCThruOctetsReceived) AND web100_log_entry.snap.HCThruOctetsReceived >= 8192 AND IS_EXPLICITLY_DEFINED(project) AND project = 0 AND IS_EXPLICITLY_DEFINED(web100_log_entry.is_last_entry) AND web100_log_entry.snap.Duration >= 9000000 AND web100_log_entry.snap.Duration < 3600000000
+" > 2014_CA_UP_complete.csv
+
